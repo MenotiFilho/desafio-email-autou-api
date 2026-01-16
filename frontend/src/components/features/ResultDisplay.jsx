@@ -1,22 +1,11 @@
-import { Check, Copy, AlertTriangle, CheckCircle, BrainCircuit, Loader2, Send, FileText, Mail } from 'lucide-react';
-import { useState } from 'react';
+import { AlertTriangle, CheckCircle, BrainCircuit, Loader2, Mail } from 'lucide-react';
+import { CopyButton } from '../ui/CopyButton';
 
-export function ResultDisplay({ result, loading, error }) {
-    const [copiedField, setCopiedField] = useState(null);
-
-    const copyToClipboard = (text, fieldName) => {
-        if (!text) return;
-        navigator.clipboard.writeText(text);
-        setCopiedField(fieldName);
-        setTimeout(() => setCopiedField(null), 2000);
-    };
-
-    // Determina o estado atual da UI
+export function ResultDisplay({ result, loading }) {
     const isIdle = !result && !loading;
     const isProdutivo = result?.classificacao?.toLowerCase().includes('produtivo') &&
         !result?.classificacao?.toLowerCase().includes('im');
 
-    // Configurações visuais baseadas no estado
     const statusConfig = {
         idle: {
             color: 'slate',
@@ -52,7 +41,6 @@ export function ResultDisplay({ result, loading, error }) {
         }
     };
 
-    // Seleciona a config ativa
     let currentStatus = statusConfig.idle;
     if (loading) currentStatus = statusConfig.loading;
     else if (result) currentStatus = isProdutivo ? statusConfig.produtivo : statusConfig.improdutivo;
@@ -61,10 +49,8 @@ export function ResultDisplay({ result, loading, error }) {
 
     return (
         <div className="h-full flex flex-col animate-in fade-in zoom-in-95 duration-500">
-            {/* --- CARD UNIFICADO --- */}
             <div className={`flex-1 flex flex-col bg-slate-900 border rounded-2xl overflow-hidden shadow-2xl transition-all duration-500 ${currentStatus.borderColor}`}>
 
-                {/* 1. Header de Status */}
                 <div className={`p-6 border-b border-slate-800 transition-colors duration-500 ${currentStatus.bgHeader} flex items-start gap-4`}>
                     <div className={`p-3 rounded-xl bg-slate-900/50 shadow-sm transition-colors duration-500 text-${currentStatus.color}-400`}>
                         <StatusIcon size={28} className={loading ? "animate-spin" : ""} />
@@ -79,10 +65,8 @@ export function ResultDisplay({ result, loading, error }) {
                     </div>
                 </div>
 
-                {/* 2. Corpo do Email (Integrado) */}
                 <div className="flex-1 flex flex-col relative bg-slate-950/50">
 
-                    {/* Campo Assunto (Topo like Gmail) */}
                     <div className="px-6 py-4 border-b border-slate-800 flex items-center gap-4 bg-slate-900/30">
                         <span className="text-xs font-bold text-slate-500 uppercase tracking-widest min-w-[60px]">Assunto</span>
 
@@ -90,12 +74,11 @@ export function ResultDisplay({ result, loading, error }) {
                             <div className="h-5 w-2/3 bg-slate-800 rounded animate-pulse" />
                         ) : (
                             <div className="flex-1 min-w-0 flex items-start justify-between gap-4 group">
-                                <span className="font-medium text-slate-200 whitespace-pre-wrap break-words block mt-1">{result?.assunto || "..."}</span>
+                                <span className="font-medium text-slate-200 whitespace-pre-wrap break-words block mt-1">{result?.assunto}</span>
                                 {!isIdle && (
                                     <div className="opacity-0 group-hover:opacity-100 transition-opacity">
                                         <CopyButton
-                                            onClick={() => copyToClipboard(result?.assunto, 'subject')}
-                                            isCopied={copiedField === 'subject'}
+                                            text={result?.assunto}
                                             label="Assunto"
                                         />
                                     </div>
@@ -104,8 +87,7 @@ export function ResultDisplay({ result, loading, error }) {
                         )}
                     </div>
 
-                    {/* Campo Resposta (Corpo Principal) */}
-                    <div className="flex-1 p-6 relative group flex gap-4">
+                    <div className="flex-1 p-6 relative group flex justify-center gap-4">
                         {loading ? (
                             <div className="flex-1 space-y-3 animate-pulse">
                                 <div className="h-4 bg-slate-800 rounded w-3/4" />
@@ -122,8 +104,7 @@ export function ResultDisplay({ result, loading, error }) {
                                 />
                                 <div className="flex-none pt-1 opacity-0 group-hover:opacity-100 transition-opacity">
                                     <CopyButton
-                                        onClick={() => copyToClipboard(result.resposta, 'body')}
-                                        isCopied={copiedField === 'body'}
+                                        text={result.resposta}
                                         label="Resposta"
                                     />
                                 </div>
@@ -138,25 +119,5 @@ export function ResultDisplay({ result, loading, error }) {
                 </div>
             </div>
         </div>
-    );
-}
-
-
-// Componente Reutilizável de Botão de Cópia
-function CopyButton({ onClick, isCopied, label }) {
-    return (
-        <button
-            onClick={onClick}
-            className="flex-none p-2 bg-slate-800/50 hover:bg-slate-700/80 backdrop-blur-sm rounded-lg text-slate-400 hover:text-white transition-all shadow-sm border border-slate-700/50 group/btn"
-            title={`Copiar ${label}`}
-        >
-            <div className="relative">
-                {isCopied ? (
-                    <Check size={16} className="text-green-400" />
-                ) : (
-                    <Copy size={16} />
-                )}
-            </div>
-        </button>
     );
 }

@@ -2,43 +2,22 @@ import { useState } from 'react';
 import { Header } from './components/layout/Header';
 import { InputForm } from './components/features/InputForm';
 import { ResultDisplay } from './components/features/ResultDisplay';
-import { analyzeEmail } from './services/api';
+import { useEmailAnalysis } from './hooks/useEmailAnalysis';
 
 function App() {
-  // Estados
-  /* API Key state removed */
   const [activeTab, setActiveTab] = useState('file');
   const [file, setFile] = useState(null);
   const [inputText, setInputText] = useState('');
 
-  const [loading, setLoading] = useState(false);
-  const [result, setResult] = useState(null);
-  const [error, setError] = useState('');
+  const { loading, result, error, analyze, reset } = useEmailAnalysis();
 
-  // Lógica de Negócio (Controlador)
-  const handleAnalyze = async () => {
-    // Validações
-    if (activeTab === 'file' && !file) return setError('Selecione um arquivo.');
-    if (activeTab === 'text' && !inputText.trim()) return setError('Digite o texto.');
+  const handleFileChange = (newFile) => {
+    setFile(newFile);
+    reset();
+  };
 
-    setLoading(true);
-    setError('');
-    setResult(null);
-
-    try {
-      const data = await analyzeEmail(activeTab === 'file' ? file : null, inputText);
-
-      if (data.erro) {
-        setError(data.erro);
-      } else {
-        setResult(data);
-      }
-    } catch (err) {
-      console.error(err);
-      setError(err.response?.data?.detail || 'Erro de conexão.');
-    } finally {
-      setLoading(false);
-    }
+  const handleAnalyzeClick = () => {
+    analyze(file, inputText, activeTab);
   };
 
   return (
@@ -48,9 +27,9 @@ function App() {
       <main className="max-w-6xl mx-auto grid grid-cols-1 lg:grid-cols-2 gap-8 pb-10">
         <InputForm
           activeTab={activeTab} setActiveTab={setActiveTab}
-          file={file} setFile={setFile}
+          file={file} setFile={handleFileChange}
           inputText={inputText} setInputText={setInputText}
-          handleAnalyze={handleAnalyze}
+          handleAnalyze={handleAnalyzeClick}
           loading={loading}
           error={error}
         />
