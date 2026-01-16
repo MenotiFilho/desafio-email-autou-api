@@ -33,9 +33,22 @@ export function InputForm({
                 </div>
             )}
 
-            <Button onClick={handleAnalyze} isLoading={loading} icon={Send}>
-                Analisar Email
-            </Button>
+            <div className="flex gap-3">
+                <Button onClick={handleAnalyze} isLoading={loading} icon={Send} className="flex-1">
+                    Analisar Email
+                </Button>
+
+                <button
+                    onClick={() => {
+                        setFile(null);
+                        setInputText('');
+                    }}
+                    disabled={loading || (!file && !inputText)}
+                    className="px-4 py-2 text-slate-400 rounded-lg border border-transparent transition-all font-medium text-sm disabled:opacity-30 disabled:cursor-not-allowed enabled:hover:text-white enabled:hover:bg-slate-700/50 enabled:hover:border-slate-600"
+                >
+                    Novo Email
+                </button>
+            </div>
         </section>
     );
 }

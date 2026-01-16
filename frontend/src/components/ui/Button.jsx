@@ -1,14 +1,11 @@
 import { Loader2 } from 'lucide-react';
 
-export function Button({ children, isLoading, icon: Icon, ...props }) {
+export function Button({ children, onClick, isLoading, icon: Icon, disabled, className = "" }) {
     return (
         <button
-            disabled={isLoading}
-            className="w-full py-4 rounded-xl font-bold text-white transition-all 
-                 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500
-                 disabled:opacity-70 disabled:cursor-not-allowed active:scale-[0.98]
-                 shadow-lg shadow-blue-900/20 flex items-center justify-center gap-2"
-            {...props}
+            onClick={onClick}
+            disabled={isLoading || disabled}
+            className={`w-full py-3 px-4 bg-gradient-to-r from-blue-600 to-blue-500 hover:from-blue-500 hover:to-blue-400 text-white font-semibold rounded-xl shadow-lg shadow-blue-500/20 transform transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed flex items-center justify-center gap-2 group ${className}`}
         >
             {isLoading ? <Loader2 className="animate-spin" /> : (
                 <>

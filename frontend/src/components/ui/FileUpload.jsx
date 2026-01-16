@@ -49,17 +49,10 @@ export function FileUpload({ file, setFile }) {
     return (
         <div className="relative h-[300px] border border-slate-600 rounded-xl overflow-hidden bg-slate-900 flex flex-col">
             <div className="flex items-center justify-between px-4 py-2 bg-slate-800 border-b border-slate-700">
-                <div className="flex items-center gap-2 text-sm text-slate-300 truncate max-w-[80%]">
+                <div className="flex items-center gap-2 text-sm text-slate-300 truncate max-w-[100%]">
                     <FileText size={16} className="text-blue-400" />
                     <span className="truncate">{file.name}</span>
                 </div>
-                <button
-                    onClick={removeFile}
-                    className="p-1.5 hover:bg-red-500/20 text-slate-400 hover:text-red-400 rounded-md transition-colors"
-                    title="Remover arquivo"
-                >
-                    <Trash2 size={18} />
-                </button>
             </div>
 
             <div className="flex-1 overflow-auto p-4 bg-slate-900/50">
