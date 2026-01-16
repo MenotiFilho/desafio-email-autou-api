@@ -16,7 +16,8 @@ export const analyzeEmail = async (file, text) => {
     }
 
     const response = await axios.post(`${API_URL}/analyze`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' }
+        headers: { 'Content-Type': 'multipart/form-data' },
+        timeout: 5000 // 5 seconds timeout
     });
 
     return response.data;

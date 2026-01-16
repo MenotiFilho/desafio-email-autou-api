@@ -30,7 +30,11 @@ export function useEmailAnalysis() {
             }
         } catch (err) {
             console.error(err);
-            setError(err.response?.data?.detail || 'Erro de conexão.');
+            if (err.code === 'ECONNABORTED') {
+                setError('O servidor demorou muito para responder. Por favor, tente novamente mais tarde.');
+            } else {
+                setError(err.response?.data?.detail || 'Erro de conexão.');
+            }
         } finally {
             setLoading(false);
         }
